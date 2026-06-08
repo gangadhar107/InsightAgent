@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from llm import complete
+from insightagent.llm import complete
 
 _SYSTEM = """You rewrite a user's latest message into a STANDALONE question understandable
 with no conversation history, by filling in context the message clearly refers back to

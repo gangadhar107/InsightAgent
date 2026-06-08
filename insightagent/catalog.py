@@ -13,7 +13,7 @@ handles it). So when unsure, it returns 'none'.
 """
 from __future__ import annotations
 
-from llm import complete
+from insightagent.llm import complete
 
 CATALOG: dict[str, dict[str, str]] = {
     "total_revenue": {

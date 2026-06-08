@@ -19,7 +19,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-_ENV_PATH = Path(__file__).with_name(".env")
+_ENV_PATH = Path(__file__).resolve().parents[1] / ".env"
 _API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/{model}:embedContent"
 
 

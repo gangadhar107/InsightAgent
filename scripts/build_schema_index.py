@@ -17,10 +17,10 @@ from pathlib import Path
 
 import psycopg
 
-from embedding import embed_text
-from table_descriptions import TABLE_DESCRIPTIONS
+from insightagent.embedding import embed_text
+from insightagent.table_descriptions import TABLE_DESCRIPTIONS
 
-_ENV_PATH = Path(__file__).with_name(".env")
+_ENV_PATH = Path(__file__).resolve().parents[1] / ".env"
 # Informational tag stored alongside each row; the real model is in embedding.py/.env.
 _MODEL_TAG = "gemini-embedding-2"
 

@@ -20,16 +20,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from catalog import catalog_sql, route_to_catalog
-from clarify import check_ambiguity
-from cost import cost_guard
-from db import get_connection, get_schema
-from execution import execute_sql
-from generation import generate_sql_from_tables
-from resolver import resolve_question
-from retrieve import retrieve_tables
-from selfcheck import self_check
-from validation import validate_sql
+from insightagent.catalog import catalog_sql, route_to_catalog
+from insightagent.clarify import check_ambiguity
+from insightagent.cost import cost_guard
+from insightagent.db import get_connection, get_schema
+from insightagent.execution import execute_sql
+from insightagent.generation import generate_sql_from_tables
+from insightagent.resolver import resolve_question
+from insightagent.retrieve import retrieve_tables
+from insightagent.selfcheck import self_check
+from insightagent.validation import validate_sql
 
 
 @dataclass

@@ -12,10 +12,10 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from db import get_connection, get_columns, get_fk_join_edges
-from llm import complete
-from retrieve import retrieve_tables
-from table_descriptions import TABLE_DESCRIPTIONS
+from insightagent.db import get_connection, get_columns, get_fk_join_edges
+from insightagent.llm import complete
+from insightagent.retrieve import retrieve_tables
+from insightagent.table_descriptions import TABLE_DESCRIPTIONS
 
 _SYSTEM = """You are a careful analytics engineer writing PostgreSQL for the Pagila
 DVD-rental database. Given a question and the relevant tables (their columns,

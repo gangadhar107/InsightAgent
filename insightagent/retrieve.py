@@ -20,8 +20,8 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 
-from db import get_connection
-from embedding import embed_text
+from insightagent.db import get_connection
+from insightagent.embedding import embed_text
 
 
 @dataclass

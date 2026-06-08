@@ -18,8 +18,8 @@ import json
 import re
 from dataclasses import dataclass, field
 
-from execution import ExecutionResult
-from llm import complete
+from insightagent.execution import ExecutionResult
+from insightagent.llm import complete
 
 _SYSTEM = """You verify whether a SQL result actually answers a user's question.
 You are given the question, the SQL that was executed, and the result (columns +

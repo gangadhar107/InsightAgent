@@ -7,7 +7,7 @@ actual numbers, the way a data analyst would phrase the answer.
 """
 from __future__ import annotations
 
-from llm import complete
+from insightagent.llm import complete
 
 _SYSTEM = """You write ONE concise, plain-English sentence answering a business user's
 question from a SQL result. State the actual number(s)/name(s) from the result.

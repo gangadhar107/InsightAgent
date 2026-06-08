@@ -23,8 +23,8 @@ import sqlglot
 from sqlglot import exp
 from sqlglot.errors import ParseError
 
-from db import get_connection, get_schema
-from pii import check_pii
+from insightagent.db import get_connection, get_schema
+from insightagent.pii import check_pii
 
 # Data-modifying / DDL node types that must never appear (even inside a CTE).
 _FORBIDDEN_NAMES = ["Insert", "Update", "Delete", "Merge", "Create", "Drop",

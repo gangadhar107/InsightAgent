@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 
 import psycopg
 
-from db import get_connection
+from insightagent.db import get_connection
 
 
 @dataclass

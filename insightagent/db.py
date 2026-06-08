@@ -11,7 +11,7 @@ from pathlib import Path
 
 import psycopg
 
-_ENV_PATH = Path(__file__).with_name(".env")
+_ENV_PATH = Path(__file__).resolve().parents[1] / ".env"
 
 
 def load_env(path: Path = _ENV_PATH) -> dict[str, str]:

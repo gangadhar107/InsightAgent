@@ -17,9 +17,9 @@ from decimal import Decimal
 import pandas as pd
 import streamlit as st
 
-from pipeline import answer_question
-from summary import summarize_answer
-from table_descriptions import TABLE_DESCRIPTIONS
+from insightagent.pipeline import answer_question
+from insightagent.summary import summarize_answer
+from insightagent.table_descriptions import TABLE_DESCRIPTIONS
 
 st.set_page_config(page_title="Analytics Q&A", page_icon="📊", layout="wide")
 

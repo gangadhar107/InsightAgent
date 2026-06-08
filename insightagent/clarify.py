@@ -16,7 +16,7 @@ import json
 import re
 from dataclasses import dataclass, field
 
-from llm import complete
+from insightagent.llm import complete
 
 # Deterministic options for dimensions we can enumerate for this dataset.
 PREDEFINED_OPTIONS: dict[str, list[str]] = {

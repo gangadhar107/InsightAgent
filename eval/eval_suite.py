@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from pipeline import answer_question
+from insightagent.pipeline import answer_question
 
 
 def _nums(r) -> list[float]:

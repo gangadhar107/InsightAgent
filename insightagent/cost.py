@@ -16,7 +16,7 @@ from dataclasses import dataclass
 
 import psycopg
 
-from db import get_connection
+from insightagent.db import get_connection
 
 DEFAULT_CEILING = 1_000_000.0
 

@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "insightagent"
+version = "2.0.0"
+description = "Natural-language analytics agent over a PostgreSQL (Pagila) database"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "psycopg[binary]>=3.2,<4",
+    "sqlglot>=25",
+    "streamlit>=1.40",
+    "pandas>=2.0",
+]
+
+[tool.setuptools]
+packages = ["insightagent"]
