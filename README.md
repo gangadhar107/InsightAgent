@@ -121,7 +121,7 @@ Offline (build the index once):
 - `build_schema_index.py` embeds the descriptions and stores them
 
 Per question (the pipeline):
-- `resolver.py` rewrites a follow up into a standalone question
+- [insightagent/resolver.py]`resolver.py` rewrites a follow up into a standalone question
 - `clarify.py` decides if a question is too vague and produces tappable options
 - `catalog.py` the blessed metric definitions and a strict router
 - `retrieve.py` semantic retrieval plus the foreign key bridge step
