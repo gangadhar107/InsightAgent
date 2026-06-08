@@ -1,0 +1,195 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.app{display:grid;grid-template-columns:220px 1fr;min-height:560px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;font-size:13px}
+.sidebar{background:#1D1D1F;padding:16px 12px;display:flex;flex-direction:column;gap:4px}
+.sidebar-logo{display:flex;align-items:center;gap:8px;padding:8px 10px;margin-bottom:12px}
+.sidebar-logo-icon{width:28px;height:28px;background:#7F77DD;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.sidebar-logo-icon i{color:#fff;font-size:16px}
+.sidebar-logo-text{font-size:14px;font-weight:500;color:#fff}
+.sidebar-label{font-size:10px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;padding:8px 10px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;color:#999;cursor:pointer;font-size:13px;transition:all .15s}
+.nav-item i{font-size:16px;width:16px}
+.nav-item.active{background:#2a2a2c;color:#fff}
+.nav-item:hover:not(.active){background:#232325;color:#ccc}
+.sidebar-divider{border:none;border-top:0.5px solid #2a2a2c;margin:8px 0}
+.history-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:6px;color:#666;cursor:pointer;font-size:12px}
+.history-item:hover{background:#232325;color:#999}
+.history-dot{width:5px;height:5px;border-radius:50%;background:#534AB7;flex-shrink:0}
+
+.main{display:flex;flex-direction:column;background:var(--color-background-primary)}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.topbar-title{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.topbar-pills{display:flex;gap:6px}
+.pill{font-size:11px;padding:3px 10px;border-radius:20px;border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary);display:flex;align-items:center;gap:4px}
+.pill i{font-size:13px}
+.pill.active{background:#EEEDFE;border-color:#AFA9EC;color:#3C3489}
+
+.chat-area{flex:1;padding:20px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
+
+.msg-row{display:flex;gap:10px;align-items:flex-start}
+.msg-row.user{flex-direction:row-reverse}
+.avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:500}
+.avatar.agent{background:#EEEDFE;color:#3C3489}
+.avatar.user{background:#E1F5EE;color:#085041}
+.bubble{max-width:72%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5;color:var(--color-text-primary)}
+.bubble.agent{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:4px 12px 12px 12px}
+.bubble.user{background:#7F77DD;color:#fff;border-radius:12px 4px 12px 12px}
+.bubble.user *{color:#fff!important}
+
+.sql-block{background:#1D1D1F;border-radius:8px;padding:10px 12px;margin-top:8px;font-family:var(--font-mono);font-size:11px;color:#9F9;line-height:1.6}
+.sql-label{font-size:10px;color:#555;font-family:var(--font-sans);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:6px}
+.sql-label i{color:#888;font-size:12px}
+
+.result-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);margin-top:8px;overflow:hidden}
+.result-tabs{display:flex;border-bottom:0.5px solid var(--color-border-tertiary)}
+.rtab{padding:7px 14px;font-size:12px;color:var(--color-text-secondary);cursor:pointer;display:flex;align-items:center;gap:5px}
+.rtab i{font-size:13px}
+.rtab.active{color:#534AB7;border-bottom:1.5px solid #534AB7;margin-bottom:-0.5px}
+.result-body{padding:12px}
+
+.mini-table{width:100%;font-size:12px;border-collapse:collapse}
+.mini-table th{text-align:left;color:var(--color-text-secondary);font-weight:500;padding:4px 8px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.mini-table td{padding:5px 8px;color:var(--color-text-primary);border-bottom:0.5px solid var(--color-border-tertiary)}
+.mini-table tr:last-child td{border-bottom:none}
+
+.chart-mock{height:90px;display:flex;align-items:flex-end;gap:5px;padding:4px 0}
+.bar{border-radius:3px 3px 0 0;flex:1;min-width:0;transition:opacity .2s}
+.bar:hover{opacity:.8}
+
+.selfcheck{display:flex;align-items:flex-start;gap:6px;background:#E1F5EE;border-radius:6px;padding:7px 10px;margin-top:8px;font-size:12px;color:#085041}
+.selfcheck i{font-size:14px;flex-shrink:0;margin-top:1px}
+
+.clarify-bubble{background:#FAEEDA;border:0.5px solid #FAC775;border-radius:4px 12px 12px 12px;padding:10px 14px;font-size:13px;color:#633806;max-width:72%}
+.clarify-bubble i{font-size:13px;margin-right:4px}
+
+.input-area{padding:14px 20px;border-top:0.5px solid var(--color-border-tertiary);display:flex;gap:10px;align-items:flex-end}
+.input-box{flex:1;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--color-text-primary);display:flex;align-items:center;gap:8px}
+.input-placeholder{color:var(--color-text-secondary);flex:1}
+.input-icons{display:flex;gap:8px}
+.input-icons i{font-size:16px;color:var(--color-text-secondary)}
+.send-btn{width:34px;height:34px;border-radius:8px;background:#7F77DD;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.send-btn i{color:#fff;font-size:16px}
+
+.badge-ok{font-size:10px;padding:2px 6px;border-radius:4px;background:#E1F5EE;color:#085041;font-weight:500;display:inline-flex;align-items:center;gap:3px}
+.badge-ok i{font-size:11px}
+</style>
+
+<h2 class="sr-only">Analytics Q&A Agent UI wireframe showing sidebar navigation, chat interface with SQL display, results table, bar chart, and self-check validation</h2>
+
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon"><i class="ti ti-chart-bar" aria-hidden="true"></i></div>
+      <span class="sidebar-logo-text">Analytics Q&A</span>
+    </div>
+
+    <div class="nav-item active"><i class="ti ti-message-circle" aria-hidden="true"></i> Ask a question</div>
+    <div class="nav-item"><i class="ti ti-database" aria-hidden="true"></i> Schema explorer</div>
+    <div class="nav-item"><i class="ti ti-history" aria-hidden="true"></i> Query history</div>
+    <div class="nav-item"><i class="ti ti-chart-dots" aria-hidden="true"></i> Saved charts</div>
+
+    <hr class="sidebar-divider">
+    <div class="sidebar-label">Recent</div>
+    <div class="history-item"><span class="history-dot"></span>DAU last week</div>
+    <div class="history-item"><span class="history-dot"></span>US user revenue</div>
+    <div class="history-item"><span class="history-dot"></span>D7 retention Jan</div>
+    <div class="history-item"><span class="history-dot"></span>Week over week</div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <span class="topbar-title">New conversation</span>
+      <div class="topbar-pills">
+        <span class="pill active"><i class="ti ti-check" aria-hidden="true"></i> Self-check on</span>
+        <span class="pill"><i class="ti ti-database" aria-hidden="true"></i> analytics.db</span>
+        <span class="pill"><i class="ti ti-users" aria-hidden="true"></i> 10k users</span>
+      </div>
+    </div>
+
+    <div class="chat-area">
+
+      <div class="msg-row user">
+        <div class="avatar user">YK</div>
+        <div class="bubble user">What was our DAU last week?</div>
+      </div>
+
+      <div class="msg-row">
+        <div class="avatar agent"><i class="ti ti-sparkles" style="font-size:13px" aria-hidden="true"></i></div>
+        <div style="max-width:82%">
+          <div class="bubble agent">
+            Daily active users averaged <strong>4,213</strong> last week, peaking on Wednesday at 4,802.
+            <div class="sql-block">
+              <div class="sql-label"><i class="ti ti-code" aria-hidden="true"></i> generated sql</div>
+SELECT date, COUNT(DISTINCT user_id) AS dau
+FROM sessions
+WHERE date BETWEEN '2026-04-27' AND '2026-05-03'
+GROUP BY date
+ORDER BY date;
+            </div>
+            <div class="result-card">
+              <div class="result-tabs">
+                <div class="rtab active"><i class="ti ti-chart-bar" aria-hidden="true"></i> Chart</div>
+                <div class="rtab"><i class="ti ti-table" aria-hidden="true"></i> Table</div>
+              </div>
+              <div class="result-body">
+                <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:4px">
+                  <span style="font-size:10px;color:var(--color-text-secondary)">DAU</span>
+                  <span style="font-size:10px;color:var(--color-text-secondary)">Apr 27 – May 3</span>
+                </div>
+                <div class="chart-mock">
+                  <div class="bar" style="height:68%;background:#AFA9EC"></div>
+                  <div class="bar" style="height:74%;background:#AFA9EC"></div>
+                  <div class="bar" style="height:88%;background:#7F77DD"></div>
+                  <div class="bar" style="height:100%;background:#534AB7"></div>
+                  <div class="bar" style="height:82%;background:#7F77DD"></div>
+                  <div class="bar" style="height:71%;background:#AFA9EC"></div>
+                  <div class="bar" style="height:62%;background:#AFA9EC"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:4px">
+                  <span style="font-size:10px;color:var(--color-text-secondary)">Mon</span>
+                  <span style="font-size:10px;color:var(--color-text-secondary)">Tue</span>
+                  <span style="font-size:10px;color:var(--color-text-secondary)">Wed</span>
+                  <span style="font-size:10px;color:#534AB7;font-weight:500">Thu ↑</span>
+                  <span style="font-size:10px;color:var(--color-text-secondary)">Fri</span>
+                  <span style="font-size:10px;color:var(--color-text-secondary)">Sat</span>
+                  <span style="font-size:10px;color:var(--color-text-secondary)">Sun</span>
+                </div>
+              </div>
+            </div>
+            <div class="selfcheck">
+              <i class="ti ti-shield-check" aria-hidden="true"></i>
+              <span>Self-check passed — query window matches question, row count looks healthy (7 rows for 7 days).</span>
+              <span class="badge-ok" style="margin-left:auto;flex-shrink:0"><i class="ti ti-check" aria-hidden="true"></i> ok</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg-row user">
+        <div class="avatar user">YK</div>
+        <div class="bubble user">Show me active users</div>
+      </div>
+
+      <div class="msg-row">
+        <div class="avatar agent"><i class="ti ti-sparkles" style="font-size:13px" aria-hidden="true"></i></div>
+        <div class="clarify-bubble">
+          <i class="ti ti-help-circle" aria-hidden="true"></i>
+          By "active" do you mean users with at least one session in the last <strong>7 days</strong>, <strong>30 days</strong>, or a different window?
+        </div>
+      </div>
+
+    </div>
+
+    <div class="input-area">
+      <div class="input-box">
+        <i class="ti ti-message" style="font-size:16px;color:var(--color-text-secondary)" aria-hidden="true"></i>
+        <span class="input-placeholder">Ask a product analytics question…</span>
+        <div class="input-icons">
+          <i class="ti ti-microphone" aria-hidden="true"></i>
+        </div>
+      </div>
+      <button class="send-btn" aria-label="Send message"><i class="ti ti-send" aria-hidden="true"></i></button>
+    </div>
+  </div>
+</div>

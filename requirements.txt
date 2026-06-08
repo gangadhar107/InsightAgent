@@ -1,0 +1,8 @@
+# InsightAgent dependencies.
+# The LLM and embedding API calls use the Python standard library (urllib),
+# so there are no vendor SDKs here. Recommended: install into a fresh venv.
+
+psycopg[binary]>=3.2,<4
+sqlglot>=25
+streamlit>=1.40
+pandas>=2.0

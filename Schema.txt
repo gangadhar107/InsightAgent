@@ -1,0 +1,530 @@
+                      List of tables
+ Schema |       Name       |       Type        |  Owner
+--------+------------------+-------------------+----------
+ public | actor            | table             | postgres
+ public | address          | table             | postgres
+ public | category         | table             | postgres
+ public | city             | table             | postgres
+ public | country          | table             | postgres
+ public | customer         | table             | postgres
+ public | film             | table             | postgres
+ public | film_actor       | table             | postgres
+ public | film_category    | table             | postgres
+ public | inventory        | table             | postgres
+ public | language         | table             | postgres
+ public | payment          | partitioned table | postgres
+ public | payment_p2022_01 | table             | postgres
+ public | payment_p2022_02 | table             | postgres
+ public | payment_p2022_03 | table             | postgres
+ public | payment_p2022_04 | table             | postgres
+ public | payment_p2022_05 | table             | postgres
+ public | payment_p2022_06 | table             | postgres
+ public | payment_p2022_07 | table             | postgres
+ public | rental           | table             | postgres
+ public | staff            | table             | postgres
+ public | store            | table             | postgres
+
+
+ Table "public.actor"
+   Column    |           Type           | Collation | Nullable |                 Default
+
+-------------+--------------------------+-----------+----------+-----------------------------------------
+ actor_id    | integer                  |  | not null | nextval('actor_actor_id_seq'::regcl
+ass)
+ first_name  | text                     |  | not null |
+ last_name   | text                     |  | not null |
+ last_update | timestamp with time zone |  | not null | now()
+Indexes:
+    "actor_pkey" PRIMARY KEY, btree (actor_id)
+    "idx_actor_last_name" btree (last_name)
+Referenced by:
+    TABLE "film_actor" CONSTRAINT "film_actor_actor_id_fkey" FOREIGN KEY (actor_id) REFERENCES actor(actor_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Triggers:
+    last_updated BEFORE UPDATE ON actor FOR EACH R
+OW EXECUTE FUNCTION last_updated()
+
+ Table "public.address"
+   Column    |           Type           | Collation | Nullable |                   Default
+
+-------------+--------------------------+-----------+----------+---------------------------------------------
+ address_id  | integer                  |  | not null | nextval('address_address_id_seq'::regclass)
+ address     | text                     |  | not null |
+ address2    | text                     |  |          |
+ district    | text                     |  | not null |
+ city_id     | integer                  |  | not null |
+ postal_code | text                     |  |          |
+ phone       | text                     |  | not null |
+ last_update | timestamp with time zone |  | not null | now()
+Indexes:
+    "address_pkey" PRIMARY KEY, btree (address_id)
+    "idx_fk_city_id" btree (city_id)
+Foreign-key constraints:
+    "address_city_id_fkey" FOREIGN KEY (city_id) REFERENCES city(city_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Referenced by:
+    TABLE "customer" CONSTRAINT "customer_address_id_fkey" FOREIGN KEY (address_id) REFERENCES address(address_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    TABLE "staff" CONSTRAINT "staff_address_id_fkey" FOREIGN KEY (address_id) REFERENCES address(address_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    TABLE "store" CONSTRAINT "store_address_id_fkey" FOREIGN KEY (address_id) REFERENCES address(address_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Triggers:
+    last_updated BEFORE UPDATE ON address FOR EACH ROW EXECUTE FUNCTION last_updated()
+
+
+ Table "public.category"
+   Column    |           Type           | Collation | Nullable |                    Default
+
+-------------+--------------------------+-----------+----------+-----------------------------------------------
+ category_id | integer                  |  | not null | nextval('category_category_id_seq'::regclass)
+ name        | text                     |  | not null |
+ last_update | timestamp with time zone |  | not null | now()
+Indexes:
+    "category_pkey" PRIMARY KEY, btree (category_id)
+Referenced by:
+    TABLE "film_category" CONSTRAINT "film_category_category_id_fkey" FOREIGN KEY (category_id) REFERENCES category(category_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Triggers:
+    last_updated BEFORE UPDATE ON category FOR EACH ROW EXECUTE FUNCTION last_updated()
+
+Table "public.city"
+   Column    |           Type           | Collation | Nullable |                Default
+
+-------------+--------------------------+-----------+----------+---------------------------------------
+ city_id     | integer                  |  | not null | nextval('city_city_id_seq'::regclass)
+ city        | text                     |  | not null |
+ country_id  | integer                  |  | not null |
+ last_update | timestamp with time zone |  | not null | now()
+Indexes:
+    "city_pkey" PRIMARY KEY, btree (city_id)
+    "idx_fk_country_id" btree (country_id)
+Foreign-key constraints:
+    "city_country_id_fkey" FOREIGN KEY (country_id) REFERENCES country(country_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Referenced by:
+    TABLE "address" CONSTRAINT "address_city_id_fkey" FOREIGN KEY (city_id) REFERENCES city(city_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Triggers:
+    last_updated BEFORE UPDATE ON city FOR EACH ROW EXECUTE FUNCTION last_updated()
+
+ Table "public.country"
+   Column    |           Type           | Collation | Nullable |                   Default
+
+-------------+--------------------------+-----------+----------+---------------------------------------------
+ country_id  | integer                  |  | not null | nextval('country_country_id_seq'::regclass)
+ country     | text                     |  | not null |
+ last_update | timestamp with time zone |  | not null | now()
+Indexes:
+    "country_pkey" PRIMARY KEY, btree (country_id)
+Referenced by:
+    TABLE "city" CONSTRAINT "city_country_id_fkey"
+ FOREIGN KEY (country_id) REFERENCES country(country_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Triggers:
+    last_updated BEFORE UPDATE ON country FOR EACH ROW EXECUTE FUNCTION last_updated()
+
+ Table "public.customer"
+   Column    |           Type           | Collation | Nullable |                    Default
+
+-------------+--------------------------+-----------+----------+-----------------------------------------------
+ customer_id | integer                  |  | not null | nextval('customer_customer_id_seq'::regclass)
+ store_id    | integer                  |  | not null |
+ first_name  | text                     |  | not null |
+ last_name   | text                     |  | not null |
+ email       | text                     |  |          |
+ address_id  | integer                  |  | not null |
+ activebool  | boolean                  |  | not null | true
+ create_date | date                     |  | not null | CURRENT_DATE
+ last_update | timestamp with time zone |  |          | now()
+ active      | integer                  |  |          |
+Indexes:
+    "customer_pkey" PRIMARY KEY, btree (customer_id)
+    "idx_fk_address_id" btree (address_id)
+    "idx_fk_store_id" btree (store_id)
+    "idx_last_name" btree (last_name)
+Foreign-key constraints:
+    "customer_address_id_fkey" FOREIGN KEY (address_id) REFERENCES address(address_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    "customer_store_id_fkey" FOREIGN KEY (store_id) REFERENCES store(store_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Referenced by:
+    TABLE "payment_p2022_01" CONSTRAINT "payment_p2022_01_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+    TABLE "payment_p2022_02" CONSTRAINT "payment_p2022_02_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+    TABLE "payment_p2022_03" CONSTRAINT "payment_p2022_03_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+    TABLE "payment_p2022_04" CONSTRAINT "payment_p2022_04_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+    TABLE "payment_p2022_05" CONSTRAINT "payment_p2022_05_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+    TABLE "payment_p2022_06" CONSTRAINT "payment_p2022_06_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+    TABLE "rental" CONSTRAINT "rental_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customer(customer_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Triggers:
+    last_updated BEFORE UPDATE ON customer FOR EACH ROW EXECUTE FUNCTION last_updated()
+
+ Table "public.film"
+        Column        |           Type           | Collation | Nullable |                Default
+
+----------------------+--------------------------+-----------+----------+---------------------------------------
+ film_id              | integer                  |           | not null | nextval('film_film_id_seq'::regclass)
+ title                | text                     |           | not null |
+ description          | text                     |           |          |
+ release_year         | year                     |           |          |
+ language_id          | integer                  |           | not null |
+ original_language_id | integer                  |           |          |
+ rental_duration      | smallint                 |           | not null | 3
+ rental_rate          | numeric(4,2)             |           | not null | 4.99
+ length               | smallint                 |           |          |
+ replacement_cost     | numeric(5,2)             |           | not null | 19.99
+ rating               | mpaa_rating              |           |          | 'G'::mpaa_rating
+ last_update          | timestamp with time zone |           | not null | now()
+ special_features     | text[]                   |           |          |
+ fulltext             | tsvector                 |           | not null |
+Indexes:
+    "film_pkey" PRIMARY KEY, btree (film_id)
+    "film_fulltext_idx" gist (fulltext)
+    "idx_fk_language_id" btree (language_id)
+    "idx_fk_original_language_id" btree (original_language_id)
+    "idx_title" btree (title)
+Foreign-key constraints:
+    "film_language_id_fkey" FOREIGN KEY (language_id) REFERENCES language(language_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    "film_original_language_id_fkey" FOREIGN KEY (original_language_id) REFERENCES language(language_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Referenced by:
+    TABLE "film_actor" CONSTRAINT "film_actor_film_id_fkey" FOREIGN KEY (film_id) REFERENCES film(film_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    TABLE "film_category" CONSTRAINT "film_category_film_id_fkey" FOREIGN KEY (film_id) REFERENCES film(film_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    TABLE "inventory" CONSTRAINT "inventory_film_id_fkey" FOREIGN KEY (film_id) REFERENCES film(film_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Triggers:
+    film_fulltext_trigger BEFORE INSERT OR UPDATE ON film FOR EACH ROW EXECUTE FUNCTION tsvector_update_trigger('fulltext', 'pg_catalog.english', 'title', 'description')
+    last_updated BEFORE UPDATE ON film FOR EACH ROW EXECUTE FUNCTION last_updated()
+
+ Table "public.film_actor"
+   Column    |           Type           | Collation | Nullable | Default
+-------------+--------------------------+-----------+----------+---------
+ actor_id    | integer                  |  | not null |
+ film_id     | integer                  |  | not null |
+ last_update | timestamp with time zone |  | not null | now()
+Indexes:
+    "film_actor_pkey" PRIMARY KEY, btree (actor_id, film_id)
+    "idx_fk_film_id" btree (film_id)
+Foreign-key constraints:
+    "film_actor_actor_id_fkey" FOREIGN KEY (actor_id) REFERENCES actor(actor_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    "film_actor_film_id_fkey" FOREIGN KEY (film_id) REFERENCES film(film_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Triggers:
+    last_updated BEFORE UPDATE ON film_actor FOR EACH ROW EXECUTE FUNCTION last_updated()
+
+Table "public.film_category"
+   Column    |           Type           | Collation | Nullable | Default
+-------------+--------------------------+-----------+----------+---------
+ film_id     | integer                  |  | not null |
+ category_id | integer                  |  | not null |
+ last_update | timestamp with time zone |  | not null | now()
+Indexes:
+    "film_category_pkey" PRIMARY KEY, btree (film_id, category_id)
+Foreign-key constraints:
+    "film_category_category_id_fkey" FOREIGN KEY (category_id) REFERENCES category(category_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    "film_category_film_id_fkey" FOREIGN KEY (film_id) REFERENCES film(film_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Triggers:
+    last_updated BEFORE UPDATE ON film_category FOR EACH ROW EXECUTE FUNCTION last_updated()
+
+ Table "public.inventory"
+    Column    |           Type           | Collation | Nullable |                     Default
+
+--------------+--------------------------+-----------+----------+-------------------------------------------------
+ inventory_id | integer                  |   | not null | nextval('inventory_inventory_id_seq'::regclass)
+ film_id      | integer                  |   | not null |
+ store_id     | integer                  |   | not null |
+ last_update  | timestamp with time zone |   | not null | now()
+Indexes:
+    "inventory_pkey" PRIMARY KEY, btree (inventory_id)
+    "idx_store_id_film_id" btree (store_id, film_id)
+Foreign-key constraints:
+    "inventory_film_id_fkey" FOREIGN KEY (film_id) REFERENCES film(film_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    "inventory_store_id_fkey" FOREIGN KEY (store_id) REFERENCES store(store_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Referenced by:
+    TABLE "rental" CONSTRAINT "rental_inventory_id_fkey" FOREIGN KEY (inventory_id) REFERENCES inventory(inventory_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Triggers:
+    last_updated BEFORE UPDATE ON inventory FOR EACH ROW EXECUTE FUNCTION last_updated()
+
+ Table "public.language"
+   Column    |           Type           | Collation | Nullable |                    Default
+
+-------------+--------------------------+-----------+----------+-----------------------------------------------
+ language_id | integer                  |  | not null | nextval('language_language_id_seq'::regclass)
+ name        | character(20)            |  | not null |
+ last_update | timestamp with time zone |  | not null | now()
+Indexes:
+    "language_pkey" PRIMARY KEY, btree (language_id)
+Referenced by:
+    TABLE "film" CONSTRAINT "film_language_id_fkey" FOREIGN KEY (language_id) REFERENCES language(language_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    TABLE "film" CONSTRAINT "film_original_language_id_fkey" FOREIGN KEY (original_language_id) REFERENCES language(language_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Triggers:
+    last_updated BEFORE UPDATE ON language FOR EACH ROW EXECUTE FUNCTION last_updated()
+
+ Partitioned table "public.payment"
+    Column    |           Type           | Collation | Nullable |                   Default
+
+--------------+--------------------------+-----------+----------+---------------------------------------------
+ payment_id   | integer                  |   | not null | nextval('payment_payment_id_seq'::regclass)
+ customer_id  | integer                  |   | not null |
+ staff_id     | integer                  |   | not null |
+ rental_id    | integer                  |   | not null |
+ amount       | numeric(5,2)             |   | not null |
+ payment_date | timestamp with time zone |   | not null |
+Partition key: RANGE (payment_date)
+Indexes:
+    "payment_pkey" PRIMARY KEY, btree (payment_date, payment_id)
+Number of partitions: 7 (Use \d+ to list them.)
+
+ Table "public.payment_p2022_01"
+    Column    |           Type           | Collation | Nullable |                   Default
+
+--------------+--------------------------+-----------+----------+---------------------------------------------
+ payment_id   | integer                  |   | not null | nextval('payment_payment_id_seq'::regclass)
+ customer_id  | integer                  |   | not null |
+ staff_id     | integer                  |   | not null |
+ rental_id    | integer                  |   | not null |
+ amount       | numeric(5,2)             |   | not null |
+ payment_date | timestamp with time zone |   | not null |
+Partition of: payment FOR VALUES FROM ('2022-01-01 05:30:00+05:30') TO ('2022-02-01 05:30:00+05:30')
+Indexes:
+    "payment_p2022_01_pkey" PRIMARY KEY, btree (payment_date, payment_id)
+    "idx_fk_payment_p2022_01_customer_id" btree (customer_id)
+    "idx_fk_payment_p2022_01_staff_id" btree (staff_id)
+    "payment_p2022_01_customer_id_idx" btree (customer_id)
+Foreign-key constraints:
+    "payment_p2022_01_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+    "payment_p2022_01_rental_id_fkey" FOREIGN KEY (rental_id) REFERENCES rental(rental_id)
+    "payment_p2022_01_staff_id_fkey" FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+
+ Table "public.payment_p2022_02"
+    Column    |           Type           | Collation | Nullable |                   Default
+--------------+--------------------------+-----------+----------+---------------------------------------------
+ payment_id   | integer                  |           | not null | nextval('payment_payment_id_seq'::regclass)
+ customer_id  | integer                  |           | not null |
+ staff_id     | integer                  |           | not null |
+ rental_id    | integer                  |           | not null |
+ amount       | numeric(5,2)             |           | not null |
+ payment_date | timestamp with time zone |           | not null |
+Partition of: payment FOR VALUES FROM ('2022-02-01 05:30:00+05:30') TO ('2022-03-01 05:30:00+05:30')
+Indexes:
+    "payment_p2022_02_pkey" PRIMARY KEY, btree (payment_date, payment_id)
+    "idx_fk_payment_p2022_02_customer_id" btree (customer_id)
+    "idx_fk_payment_p2022_02_staff_id" btree (staff_id)
+    "payment_p2022_02_customer_id_idx" btree (customer_id)
+Foreign-key constraints:
+    "payment_p2022_02_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+    "payment_p2022_02_rental_id_fkey" FOREIGN KEY (rental_id) REFERENCES rental(rental_id)
+    "payment_p2022_02_staff_id_fkey" FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+
+
+ Table "public.payment_p2022_03"
+    Column    |           Type           | Collation | Nullable |                   Default
+--------------+--------------------------+-----------+----------+---------------------------------------------
+ payment_id   | integer                  |           | not null | nextval('payment_payment_id_seq'::regclass)
+ customer_id  | integer                  |           | not null |
+ staff_id     | integer                  |           | not null |
+ rental_id    | integer                  |           | not null |
+ amount       | numeric(5,2)             |           | not null |
+ payment_date | timestamp with time zone |           | not null |
+Partition of: payment FOR VALUES FROM ('2022-03-01 05:30:00+05:30') TO ('2022-04-01 05:30:00+05:30')
+Indexes:
+    "payment_p2022_03_pkey" PRIMARY KEY, btree (payment_date, payment_id)
+    "idx_fk_payment_p2022_03_customer_id" btree (customer_id)
+    "idx_fk_payment_p2022_03_staff_id" btree (staff_id)
+    "payment_p2022_03_customer_id_idx" btree (customer_id)
+Foreign-key constraints:
+    "payment_p2022_03_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+    "payment_p2022_03_rental_id_fkey" FOREIGN KEY (rental_id) REFERENCES rental(rental_id)
+    "payment_p2022_03_staff_id_fkey" FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+
+
+ Table "public.payment_p2022_04"
+    Column    |           Type           | Collation | Nullable |                   Default
+--------------+--------------------------+-----------+----------+---------------------------------------------
+ payment_id   | integer                  |           | not null | nextval('payment_payment_id_seq'::regclass)
+ customer_id  | integer                  |           | not null |
+ staff_id     | integer                  |           | not null |
+ rental_id    | integer                  |           | not null |
+ amount       | numeric(5,2)             |           | not null |
+ payment_date | timestamp with time zone |           | not null |
+Partition of: payment FOR VALUES FROM ('2022-04-01 05:30:00+05:30') TO ('2022-05-01 05:30:00+05:30')
+Indexes:
+    "payment_p2022_04_pkey" PRIMARY KEY, btree (payment_date, payment_id)
+    "idx_fk_payment_p2022_04_customer_id" btree (customer_id)
+    "idx_fk_payment_p2022_04_staff_id" btree (staff_id)
+    "payment_p2022_04_customer_id_idx" btree (customer_id)
+Foreign-key constraints:
+    "payment_p2022_04_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+    "payment_p2022_04_rental_id_fkey" FOREIGN KEY (rental_id) REFERENCES rental(rental_id)
+    "payment_p2022_04_staff_id_fkey" FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+
+
+Table "public.payment_p2022_05"
+    Column    |           Type           | Collation | Nullable |                   Default
+--------------+--------------------------+-----------+----------+---------------------------------------------
+ payment_id   | integer                  |           | not null | nextval('payment_payment_id_seq'::regclass)
+ customer_id  | integer                  |           | not null |
+ staff_id     | integer                  |           | not null |
+ rental_id    | integer                  |           | not null |
+ amount       | numeric(5,2)             |           | not null |
+ payment_date | timestamp with time zone |           | not null |
+Partition of: payment FOR VALUES FROM ('2022-05-01 05:30:00+05:30') TO ('2022-06-01 05:30:00+05:30')
+Indexes:
+    "payment_p2022_05_pkey" PRIMARY KEY, btree (payment_date, payment_id)
+    "idx_fk_payment_p2022_05_customer_id" btree (customer_id)
+    "idx_fk_payment_p2022_05_staff_id" btree (staff_id)
+    "payment_p2022_05_customer_id_idx" btree (customer_id)
+Foreign-key constraints:
+    "payment_p2022_05_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+    "payment_p2022_05_rental_id_fkey" FOREIGN KEY (rental_id) REFERENCES rental(rental_id)
+    "payment_p2022_05_staff_id_fkey" FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+
+
+ Table "public.payment_p2022_06"
+    Column    |           Type           | Collation | Nullable |                   Default
+--------------+--------------------------+-----------+----------+---------------------------------------------
+ payment_id   | integer                  |           | not null | nextval('payment_payment_id_seq'::regclass)
+ customer_id  | integer                  |           | not null |
+ staff_id     | integer                  |           | not null |
+ rental_id    | integer                  |           | not null |
+ amount       | numeric(5,2)             |           | not null |
+ payment_date | timestamp with time zone |           | not null |
+Partition of: payment FOR VALUES FROM ('2022-06-01 05:30:00+05:30') TO ('2022-07-01 05:30:00+05:30')
+Indexes:
+    "payment_p2022_06_pkey" PRIMARY KEY, btree (payment_date, payment_id)
+    "idx_fk_payment_p2022_06_customer_id" btree (customer_id)
+    "idx_fk_payment_p2022_06_staff_id" btree (staff_id)
+    "payment_p2022_06_customer_id_idx" btree (customer_id)
+Foreign-key constraints:
+    "payment_p2022_06_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+    "payment_p2022_06_rental_id_fkey" FOREIGN KEY (rental_id) REFERENCES rental(rental_id)
+    "payment_p2022_06_staff_id_fkey" FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+
+
+ Table "public.payment_p2022_07"
+    Column    |           Type           | Collation | Nullable |                   Default
+--------------+--------------------------+-----------+----------+---------------------------------------------
+ payment_id   | integer                  |           | not null | nextval('payment_payment_id_seq'::regclass)
+ customer_id  | integer                  |           | not null |
+ staff_id     | integer                  |           | not null |
+ rental_id    | integer                  |           | not null |
+ amount       | numeric(5,2)             |           | not null |
+ payment_date | timestamp with time zone |           | not null |
+Partition of: payment FOR VALUES FROM ('2022-07-01 05:30:00+05:30') TO ('2022-08-01 05:30:00+05:30')
+Indexes:
+    "payment_p2022_07_pkey" PRIMARY KEY, btree (payment_date, payment_id)
+
+
+Table "public.rental"
+    Column    |           Type           | Collation | Nullable |                  Default
+--------------+--------------------------+-----------+----------+-------------------------------------------
+ rental_id    | integer                  |           | not null | nextval('rental_rental_id_seq'::regclass)
+ rental_date  | timestamp with time zone |           | not null |
+ inventory_id | integer                  |           | not null |
+ customer_id  | integer                  |           | not null |
+ return_date  | timestamp with time zone |           |          |
+ staff_id     | integer                  |           | not null |
+ last_update  | timestamp with time zone |           | not null | now()
+Indexes:
+    "rental_pkey" PRIMARY KEY, btree (rental_id)
+    "idx_fk_inventory_id" btree (inventory_id)
+    "idx_unq_rental_rental_date_inventory_id_customer_id" UNIQUE, btree (rental_date, inventory_id, customer_id)
+Foreign-key constraints:
+    "rental_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customer(customer_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    "rental_inventory_id_fkey" FOREIGN KEY (inventory_id) REFERENCES inventory(inventory_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    "rental_staff_id_fkey" FOREIGN KEY (staff_id) REFERENCES staff(staff_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Referenced by:
+    TABLE "payment_p2022_01" CONSTRAINT "payment_p2022_01_rental_id_fkey" FOREIGN KEY (rental_id) REFERENCES rental(rental_id)
+    TABLE "payment_p2022_02" CONSTRAINT "payment_p2022_02_rental_id_fkey" FOREIGN KEY (rental_id) REFERENCES rental(rental_id)
+    TABLE "payment_p2022_03" CONSTRAINT "payment_p2022_03_rental_id_fkey" FOREIGN KEY (rental_id) REFERENCES rental(rental_id)
+    TABLE "payment_p2022_04" CONSTRAINT "payment_p2022_04_rental_id_fkey" FOREIGN KEY (rental_id) REFERENCES rental(rental_id)
+    TABLE "payment_p2022_05" CONSTRAINT "payment_p2022_05_rental_id_fkey" FOREIGN KEY (rental_id) REFERENCES rental(rental_id)
+    TABLE "payment_p2022_06" CONSTRAINT "payment_p2022_06_rental_id_fkey" FOREIGN KEY (rental_id) REFERENCES rental(rental_id)
+Triggers:
+    last_updated BEFORE UPDATE ON rental FOR EACH ROW EXECUTE FUNCTION last_updated()
+
+
+Table "public.staff"
+   Column    |           Type           | Collation | Nullable |                 Default
+-------------+--------------------------+-----------+----------+-----------------------------------------
+ staff_id    | integer                  |           | not null | nextval('staff_staff_id_seq'::regclass)
+ first_name  | text                     |           | not null |
+ last_name   | text                     |           | not null |
+ address_id  | integer                  |           | not null |
+ email       | text                     |           |          |
+ store_id    | integer                  |           | not null |
+ active      | boolean                  |           | not null | true
+ username    | text                     |           | not null |
+ password    | text                     |           |          |
+ last_update | timestamp with time zone |           | not null | now()
+ picture     | bytea                    |           |          |
+Indexes:
+    "staff_pkey" PRIMARY KEY, btree (staff_id)
+Foreign-key constraints:
+    "staff_address_id_fkey" FOREIGN KEY (address_id) REFERENCES address(address_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    "staff_store_id_fkey" FOREIGN KEY (store_id) REFERENCES store(store_id)
+Referenced by:
+    TABLE "payment_p2022_01" CONSTRAINT "payment_p2022_01_staff_id_fkey" FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+    TABLE "payment_p2022_02" CONSTRAINT "payment_p2022_02_staff_id_fkey" FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+    TABLE "payment_p2022_03" CONSTRAINT "payment_p2022_03_staff_id_fkey" FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+    TABLE "payment_p2022_04" CONSTRAINT "payment_p2022_04_staff_id_fkey" FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+    TABLE "payment_p2022_05" CONSTRAINT "payment_p2022_05_staff_id_fkey" FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+    TABLE "payment_p2022_06" CONSTRAINT "payment_p2022_06_staff_id_fkey" FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+    TABLE "rental" CONSTRAINT "rental_staff_id_fkey" FOREIGN KEY (staff_id) REFERENCES staff(staff_id) ON UPDATE CASCADE ON DELETE
+RESTRICT
+Triggers:
+    last_updated BEFORE UPDATE ON staff FOR EACH ROW EXECUTE FUNCTION last_updated()
+
+
+Table "public.store"
+      Column      |           Type           | Collation | Nullable |                 Default
+------------------+--------------------------+-----------+----------+-----------------------------------------
+ store_id         | integer                  |           | not null | nextval('store_store_id_seq'::regclass)
+ manager_staff_id | integer                  |           | not null |
+ address_id       | integer                  |           | not null |
+ last_update      | timestamp with time zone |           | not null | now()
+Indexes:
+    "store_pkey" PRIMARY KEY, btree (store_id)
+    "idx_unq_manager_staff_id" UNIQUE, btree (manager_staff_id)
+Foreign-key constraints:
+    "store_address_id_fkey" FOREIGN KEY (address_id) REFERENCES address(address_id) ON UPDATE CASCADE ON DELETE RESTRICT
+Referenced by:
+    TABLE "customer" CONSTRAINT "customer_store_id_fkey" FOREIGN KEY (store_id) REFERENCES store(store_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    TABLE "inventory" CONSTRAINT "inventory_store_id_fkey" FOREIGN KEY (store_id) REFERENCES store(store_id) ON UPDATE CASCADE ON DELETE RESTRICT
+    TABLE "staff" CONSTRAINT "staff_store_id_fkey" FOREIGN KEY (store_id) REFERENCES store(store_id)
+Triggers:
+    last_updated BEFORE UPDATE ON store FOR EACH ROW EXECUTE FUNCTION last_updated()
+
+
+List of relations
+ Schema |            Name            |       Type        |  Owner   | Persistence | Access method |    Size    | Description
+--------+----------------------------+-------------------+----------+-------------+---------------+------------+-------------
+ public | actor                      | table             | postgres | permanent   | heap          | 48 kB      |
+ public | actor_actor_id_seq         | sequence          | postgres | permanent   |               | 8192 bytes |
+ public | actor_info                 | view              | postgres | permanent   |               | 0 bytes    |
+ public | address                    | table             | postgres | permanent   | heap          | 96 kB      |
+ public | address_address_id_seq     | sequence          | postgres | permanent   |               | 8192 bytes |
+ public | category                   | table             | postgres | permanent   | heap          | 16 kB      |
+ public | category_category_id_seq   | sequence          | postgres | permanent   |               | 8192 bytes |
+ public | city                       | table             | postgres | permanent   | heap          | 72 kB      |
+ public | city_city_id_seq           | sequence          | postgres | permanent   |               | 8192 bytes |
+ public | country                    | table             | postgres | permanent   | heap          | 16 kB      |
+ public | country_country_id_seq     | sequence          | postgres | permanent   |               | 8192 bytes |
+ public | customer                   | table             | postgres | permanent   | heap          | 104 kB     |
+ public | customer_customer_id_seq   | sequence          | postgres | permanent   |               | 8192 bytes |
+ public | customer_list              | view              | postgres | permanent   |               | 0 bytes    |
+ public | film                       | table             | postgres | permanent   | heap          | 736 kB     |
+ public | film_actor                 | table             | postgres | permanent   | heap          | 272 kB     |
+ public | film_category              | table             | postgres | permanent   | heap          | 72 kB      |
+ public | film_film_id_seq           | sequence          | postgres | permanent   |               | 8192 bytes |
+ public | film_list                  | view              | postgres | permanent   |               | 0 bytes    |
+ public | inventory                  | table             | postgres | permanent   | heap          | 272 kB     |
+ public | inventory_inventory_id_seq | sequence          | postgres | permanent   |               | 8192 bytes |
+ public | language                   | table             | postgres | permanent   | heap          | 8192 bytes |
+ public | language_language_id_seq   | sequence          | postgres | permanent   |               | 8192 bytes |
+ public | nicer_but_slower_film_list | view              | postgres | permanent   |               | 0 bytes    |
+ public | payment                    | partitioned table | postgres | permanent   |               | 0 bytes    |
+ public | payment_p2022_01           | table             | postgres | permanent   | heap          | 72 kB      |
+ public | payment_p2022_02           | table             | postgres | permanent   | heap          | 176 kB     |
+ public | payment_p2022_03           | table             | postgres | permanent   | heap          | 192 kB     |
+ public | payment_p2022_04           | table             | postgres | permanent   | heap          | 184 kB     |
+ public | payment_p2022_05           | table             | postgres | permanent   | heap          | 192 kB     |
+ public | payment_p2022_06           | table             | postgres | permanent   | heap          | 192 kB     |
+ public | payment_p2022_07           | table             | postgres | permanent   | heap          | 176 kB     |
+ public | payment_payment_id_seq     | sequence          | postgres | permanent   |               | 8192 bytes |
+ public | rental                     | table             | postgres | permanent   | heap          | 1232 kB    |
+ public | rental_by_category         | materialized view | postgres | permanent   | heap          | 8192 bytes |
+ public | rental_rental_id_seq       | sequence          | postgres | permanent   |               | 8192 bytes |
+ public | sales_by_film_category     | view              | postgres | permanent   |               | 0 bytes    |
+ public | sales_by_store             | view              | postgres | permanent   |               | 0 bytes    |
+ public | staff                      | table             | postgres | permanent   | heap          | 16 kB      |
+ public | staff_list                 | view              | postgres | permanent   |               | 0 bytes    |
+ public | staff_staff_id_seq         | sequence          | postgres | permanent   |               | 8192 bytes |
+ public | store                      | table             | postgres | permanent   | heap          | 8192 bytes |
+ public | store_store_id_seq         | sequence          | postgres | permanent   |               | 8192 bytes |
