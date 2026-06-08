@@ -109,30 +109,30 @@ python -m streamlit run app.py
 python eval_suite.py
 ```
 
-Every module also runs on its own as a small smoke test, for example `python validation.py` runs a battery of read-only and PII checks, and `python retrieve.py` shows retrieval on an easy and a hard question.
+Every module also runs on its own as a small smoke test, for example [validation.py](insightagent/validation.py) runs a battery of read-only and PII checks, and [retrieve.py](insightagent/retrieve.py) shows retrieval on an easy and a hard question.
 
 ## Repo layout
 
 The build went one component at a time, each small and tested before moving on.
 
 Offline (build the index once):
-- `table_descriptions.py` plain language descriptions of the 15 tables
-- `embedding.py` text to vector
-- `build_schema_index.py` embeds the descriptions and stores them
+- [table_descriptions.py](insightagent/table_descriptions.py) plain language descriptions of the 15 tables
+- [embedding.py](insightagent/embedding.py) text to vector
+- [build_schema_index.py](scripts/build_schema_index.py) embeds the descriptions and stores them
 
 Per question (the pipeline):
-- `resolver.py`[insightagent/resolver.py] rewrites a follow up into a standalone question
-- `clarify.py` decides if a question is too vague and produces tappable options
-- `catalog.py` the blessed metric definitions and a strict router
-- `retrieve.py` semantic retrieval plus the foreign key bridge step
-- `generation.py` turns retrieved tables into one SELECT
-- `validation.py` and `pii.py` the guard behind generation
-- `cost.py` the EXPLAIN cost guard
-- `execution.py` runs the query read-only with a timeout
-- `selfcheck.py` checks the result against the question
-- `pipeline.py` wires all of it together
-- `summary.py` the one line answer for the UI
-- `app.py` the Streamlit UI
-- `eval_suite.py` the evaluation harness
+- [resolver.py](insightagent/resolver.py) rewrites a follow-up into a standalone question.
+- [clarify.py](insightagent/clarify.py) decides if a question is too vague and produces tappable options
+- [catalog.py](insightagent/catalog.py) the blessed metric definitions and a strict router
+- [retrieve.py](insightagent/retrieve.py) semantic retrieval plus the foreign key bridge step
+- [generation.py](insightagent/generation.py) turns retrieved tables into one SELECT
+- [validation.py](insightagent/validation.py) and [pii.py](insightagent/pii.py) the guard behind generation
+- [cost.py](insightagent/cost.py) the EXPLAIN cost guard
+- [execution.py](insightagent/execution.py) runs the query read-only with a timeout
+- [selfcheck.py](insightagent/selfcheck.py) checks the result against the question
+- [pipeline.py](insightagent/pipeline.py) wires all of it together
+- [summary.py](insightagent/summary.py) the one line answer for the UI
+- [app.py](ui/app.py) the Streamlit UI
+- [eval_suite.py](eval/eval_suite.py) the evaluation harness
 
-`CLAUDE.md` has the full design notes, the data quirks, and the decisions, in more detail than this README.
+[CLAUDE.md](CLAUDE.md) has the full design notes, the data quirks, and the decisions, in more detail than this README.
