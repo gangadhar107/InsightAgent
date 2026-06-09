@@ -83,10 +83,13 @@ def render_answer_card(result, summary: str) -> None:
 
 def render_clarification(result, idx: int) -> None:
     st.markdown(f"❓ {result.clarify_question}")
-    cols = st.columns(len(result.clarify_options) or 1)
-    for i, opt in enumerate(result.clarify_options):
-        if cols[i].button(opt, key=f"opt_{idx}_{i}"):
-            st.session_state.queued = opt
+    opts = result.clarify_options
+    per_row = 3
+    for start in range(0, len(opts), per_row):
+        cols = st.columns(per_row)
+        for j, opt in enumerate(opts[start:start + per_row]):
+            if cols[j].button(opt, key=f"opt_{idx}_{start + j}", use_container_width=True):
+                st.session_state.queued = opt
 
 
 # --- sidebar ---------------------------------------------------------------

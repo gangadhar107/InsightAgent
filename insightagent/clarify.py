@@ -20,7 +20,15 @@ from insightagent.llm import complete
 
 # Deterministic options for dimensions we can enumerate for this dataset.
 PREDEFINED_OPTIONS: dict[str, list[str]] = {
-    "time_period": ["All available data (Jan-Jul 2022)", "A specific month", "Month by month"],
+    # Every option must be TERMINAL (lead straight to an answer). A vague bucket
+    # like "a specific month" just triggers another identical clarification, so we
+    # list the actual months (payment data spans Jan-Jul 2022) instead.
+    "time_period": [
+        "All available data (Jan-Jul 2022)",
+        "January 2022", "February 2022", "March 2022", "April 2022",
+        "May 2022", "June 2022", "July 2022",
+        "Month by month",
+    ],
     "store": ["Both stores combined", "Store 1 only", "Store 2 only", "Compare store 1 vs store 2"],
 }
 
