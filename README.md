@@ -6,7 +6,7 @@ The database here is Pagila, the Postgres DVD rental sample. The database is not
 
 ## Demo
 
-![InsightAgent demo](docs/demo.gif)
+![InsightAgent demo](docs/Demo.gif)
 
 _Asking a question in plain English: the generated SQL runs, the answer comes back with a chart and a self-check, and a vague question gets a clarifying prompt with tappable options._
 
