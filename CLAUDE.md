@@ -113,6 +113,12 @@ Two phases: an **offline index build**, then the **per-question pipeline**. Each
 **Layout (pip-installable, see `pyproject.toml`):** the library modules below all live in `insightagent/`. Entry points are `ui/app.py`, `scripts/build_schema_index.py`, `eval/eval_suite.py`; reference SQL is
 `sql/reference_queries.sql`; source docs are in `docs/`. The table uses bare module names for everything under `insightagent/`.
 
+**Layout (pip-installable, see `pyproject.toml`):** the library modules below all
+live in `insightagent/`. Entry points are `ui/app.py`,
+`scripts/build_schema_index.py`, `eval/eval_suite.py`; reference SQL is
+`sql/reference_queries.sql`; source docs are in `docs/`. The table uses bare
+module names for everything under `insightagent/`.
+
 | File | Role | Key entry point |
 |------|------|-----------------|
 | `db.py` | Postgres connection + catalog introspection | `get_connection`, `get_columns`, `get_fk_join_edges`, `get_schema` |

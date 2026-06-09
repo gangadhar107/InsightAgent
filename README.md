@@ -4,9 +4,19 @@ InsightAgent lets someone ask a question about a database in plain English and g
 
 The database here is Pagila, the Postgres DVD rental sample. The database is not the point. The pipeline around it is.
 
+## Demo
+
+![InsightAgent demo](docs/demo.gif)
+
+_Asking a question in plain English: the generated SQL runs, the answer comes back with a chart and a self-check, and a vague question gets a clarifying prompt with tappable options._
+
+<!-- Record the app, export a short GIF, and save it at exactly docs/demo.gif .
+     It will render here automatically. Keep it small (a few MB) so it loads
+     fast. A committed .mp4 will not play on GitHub, which is why this is a GIF. -->
+
 ## Why I built it
 
-The people who need data the most, product and business managers, usually cannot get it themselves. They ask an analyst and wait. By the time the number comes back the decision has often already been made on instinct. The analyst, meanwhile, spends the day answering the same narrow questions instead of doing the work only they can do.
+The point is to shrink the distance between a question and its number. Instead of opening the warehouse and writing the query yourself, you ask for the metric in plain language, the way you would drop a message in Slack: what is this right now? The agent writes the SQL, runs it against the database, and hands back the value, with a chart when one helps. The build here is a web chat rather than a Slack bot, but the shape is the same.
 
 Dashboards do not close this gap. A dashboard answers the questions someone predicted when they built it. Everything else becomes a ticket: an arbitrary intersection, a one off question nobody will ask again, a before and after comparison around a specific date. InsightAgent writes the query for those on the spot.
 
@@ -94,45 +104,46 @@ And 12 questions is enough to catch hallucination. It is not enough to claim an 
 
 ## Running it
 
-You need Postgres running with the Pagila database loaded, and a `.env` file with database and API credentials (see the placeholders the app expects: `DB_*`, `LLM_*`, `EMBEDDING_*`). The `.env` file is gitignored and is not in this repo.
+You need Postgres running with the Pagila database loaded, and a `.env` file with database and API credentials. Copy `.env.example` to `.env` and fill in `DB_*`, `LLM_*`, and `EMBEDDING_*`. The real `.env` is gitignored and is not in this repo.
 
 ```bash
-pip install psycopg[binary] sqlglot streamlit pandas
+# install the package and its dependencies (editable)
+pip install -e .              # or: pip install -r requirements.txt
 
 # one time: embed the table descriptions into the schema index
-python build_schema_index.py
+python scripts/build_schema_index.py
 
 # run the app
-python -m streamlit run app.py
+streamlit run ui/app.py
 
 # run the full evaluation (all 12 questions through the live pipeline)
-python eval_suite.py
+python eval/eval_suite.py
 ```
 
-Every module also runs on its own as a small smoke test, for example [validation.py](insightagent/validation.py) runs a battery of read-only and PII checks, and [retrieve.py](insightagent/retrieve.py) shows retrieval on an easy and a hard question.
+Every module also runs on its own as a small smoke test, for example `python validation.py` runs a battery of read-only and PII checks, and `python retrieve.py` shows retrieval on an easy and a hard question.
 
 ## Repo layout
 
 The build went one component at a time, each small and tested before moving on.
 
 Offline (build the index once):
-- [table_descriptions.py](insightagent/table_descriptions.py) plain language descriptions of the 15 tables
-- [embedding.py](insightagent/embedding.py) text to vector
-- [build_schema_index.py](scripts/build_schema_index.py) embeds the descriptions and stores them
+- `table_descriptions.py` plain language descriptions of the 15 tables
+- `embedding.py` text to vector
+- `build_schema_index.py` embeds the descriptions and stores them
 
 Per question (the pipeline):
-- [resolver.py](insightagent/resolver.py) rewrites a follow-up into a standalone question.
-- [clarify.py](insightagent/clarify.py) decides if a question is too vague and produces tappable options
-- [catalog.py](insightagent/catalog.py) the blessed metric definitions and a strict router
-- [retrieve.py](insightagent/retrieve.py) semantic retrieval plus the foreign key bridge step
-- [generation.py](insightagent/generation.py) turns retrieved tables into one SELECT
-- [validation.py](insightagent/validation.py) and [pii.py](insightagent/pii.py) the guard behind generation
-- [cost.py](insightagent/cost.py) the EXPLAIN cost guard
-- [execution.py](insightagent/execution.py) runs the query read-only with a timeout
-- [selfcheck.py](insightagent/selfcheck.py) checks the result against the question
-- [pipeline.py](insightagent/pipeline.py) wires all of it together
-- [summary.py](insightagent/summary.py) the one line answer for the UI
-- [app.py](ui/app.py) the Streamlit UI
-- [eval_suite.py](eval/eval_suite.py) the evaluation harness
+- `resolver.py` rewrites a follow up into a standalone question
+- `clarify.py` decides if a question is too vague and produces tappable options
+- `catalog.py` the blessed metric definitions and a strict router
+- `retrieve.py` semantic retrieval plus the foreign key bridge step
+- `generation.py` turns retrieved tables into one SELECT
+- `validation.py` and `pii.py` the guard behind generation
+- `cost.py` the EXPLAIN cost guard
+- `execution.py` runs the query read-only with a timeout
+- `selfcheck.py` checks the result against the question
+- `pipeline.py` wires all of it together
+- `summary.py` the one line answer for the UI
+- `app.py` the Streamlit UI
+- `eval_suite.py` the evaluation harness
 
 [CLAUDE.md](CLAUDE.md) has the full design notes, the data quirks, and the decisions, in more detail than this README.
