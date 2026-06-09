@@ -39,7 +39,7 @@ If you add a feature, keep this shape: model proposes, a guard disposes.
 - **pgvector is NOT installed** and can't be easily installed here (no MSVC/Docker), so embeddings are stored in a plain `double precision[]` column and cosine is computed in Python (fine for a 15-row index; see §9).
 
 ### Secrets / config — `.env` (gitignored)
-All config is read from `.env` by a tiny parser duplicated in each module (`_load_env` / `load_env`). Keys: `DB_HOST DB_PORT DB_NAME DB_USER DB_PASSWORD`, `LLM_PROVIDER LLM_API_KEY LLM_MODEL`, EMBEDDING_PROVIDER EMBEDDING_MODEL, EMBEDDING_API_KEY`. **Gotcha:** the parser strips surrounding whitespace AND quotes because the password value was entered with a leading space. `.env` contains real API keys — never commit it.
+All config is read from `.env` by a tiny parser duplicated in each module (`_load_env` / `load_env`). Keys: `DB_HOST DB_PORT DB_NAME DB_USER DB_PASSWORD`, `LLM_PROVIDER LLM_API_KEY LLM_MODEL`, `EMBEDDING_PROVIDER EMBEDDING_MODEL EMBEDDING_API_KEY`. **Gotcha:** the parser strips surrounding whitespace AND quotes because the password value was entered with a leading space. `.env` contains real API keys — never commit it.
 
 ---
 
@@ -112,12 +112,6 @@ Two phases: an **offline index build**, then the **per-question pipeline**. Each
 
 **Layout (pip-installable, see `pyproject.toml`):** the library modules below all live in `insightagent/`. Entry points are `ui/app.py`, `scripts/build_schema_index.py`, `eval/eval_suite.py`; reference SQL is
 `sql/reference_queries.sql`; source docs are in `docs/`. The table uses bare module names for everything under `insightagent/`.
-
-**Layout (pip-installable, see `pyproject.toml`):** the library modules below all
-live in `insightagent/`. Entry points are `ui/app.py`,
-`scripts/build_schema_index.py`, `eval/eval_suite.py`; reference SQL is
-`sql/reference_queries.sql`; source docs are in `docs/`. The table uses bare
-module names for everything under `insightagent/`.
 
 | File | Role | Key entry point |
 |------|------|-----------------|
