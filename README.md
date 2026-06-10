@@ -4,6 +4,12 @@ InsightAgent lets someone ask a question about a database in plain English and g
 
 The database here is Pagila, the Postgres DVD rental sample. The database is not the point. The pipeline around it is.
 
+## Demo
+
+![InsightAgent demo](docs/Demo.gif)
+
+_Asking a question in plain English: the generated SQL runs, the answer comes back with a chart and a self-check, and a vague question gets a clarifying prompt with tappable options._
+
 ## Why I built it
 
 The point is to shrink the distance between a question and its number. Instead of opening the warehouse and writing the query yourself, you ask for the metric in plain language, the way you would drop a message in Slack: what is this right now? The agent writes the SQL, runs it against the database, and hands back the value, with a chart when one helps. The build here is a web chat rather than a Slack bot, but the shape is the same.
