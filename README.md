@@ -4,16 +4,6 @@ InsightAgent lets someone ask a question about a database in plain English and g
 
 The database here is Pagila, the Postgres DVD rental sample. The database is not the point. The pipeline around it is.
 
-## Demo
-
-![InsightAgent demo](docs/Demo.gif)
-
-_Asking a question in plain English: the generated SQL runs, the answer comes back with a chart and a self-check, and a vague question gets a clarifying prompt with tappable options._
-
-<!-- Record the app, export a short GIF, and save it at exactly docs/demo.gif .
-     It will render here automatically. Keep it small (a few MB) so it loads
-     fast. A committed .mp4 will not play on GitHub, which is why this is a GIF. -->
-
 ## Why I built it
 
 The point is to shrink the distance between a question and its number. Instead of opening the warehouse and writing the query yourself, you ask for the metric in plain language, the way you would drop a message in Slack: what is this right now? The agent writes the SQL, runs it against the database, and hands back the value, with a chart when one helps. The build here is a web chat rather than a Slack bot, but the shape is the same.
@@ -120,30 +110,32 @@ streamlit run ui/app.py
 python eval/eval_suite.py
 ```
 
-Every module also runs on its own as a small smoke test, for example `python validation.py` runs a battery of read-only and PII checks, and `python retrieve.py` shows retrieval on an easy and a hard question.
+Every library module also runs on its own as a small smoke test, for example `python -m insightagent.validation` runs a battery of read-only and PII checks, and `python -m insightagent.retrieve` shows retrieval on an easy and a hard question.
 
 ## Repo layout
 
-The build went one component at a time, each small and tested before moving on.
+The build went one component at a time, each small and tested before moving on. It is a pip-installable package (`pip install -e .`).
 
-Offline (build the index once):
-- `table_descriptions.py` plain language descriptions of the 15 tables
-- `embedding.py` text to vector
-- `build_schema_index.py` embeds the descriptions and stores them
-
-Per question (the pipeline):
-- `resolver.py` rewrites a follow up into a standalone question
-- `clarify.py` decides if a question is too vague and produces tappable options
-- `catalog.py` the blessed metric definitions and a strict router
-- `retrieve.py` semantic retrieval plus the foreign key bridge step
-- `generation.py` turns retrieved tables into one SELECT
-- `validation.py` and `pii.py` the guard behind generation
-- `cost.py` the EXPLAIN cost guard
-- `execution.py` runs the query read-only with a timeout
-- `selfcheck.py` checks the result against the question
-- `pipeline.py` wires all of it together
-- `summary.py` the one line answer for the UI
-- `app.py` the Streamlit UI
-- `eval_suite.py` the evaluation harness
+```
+insightagent/        the library, one small module per pipeline stage
+  resolver.py        rewrites a follow up into a standalone question
+  clarify.py         decides if a question is too vague, offers tappable options
+  catalog.py         the blessed metric definitions and a strict router
+  retrieve.py        semantic retrieval plus the foreign key bridge step
+  generation.py      turns retrieved tables into one SELECT
+  validation.py      read only / real tables and columns / PII checks
+  pii.py             the PII column policy
+  cost.py            the EXPLAIN cost guard
+  execution.py       runs the query read only with a timeout
+  selfcheck.py       checks the result against the question
+  pipeline.py        wires all of it together
+  summary.py         the one line answer for the UI
+  db.py llm.py embedding.py table_descriptions.py   building blocks
+ui/app.py            the Streamlit UI
+scripts/build_schema_index.py   one time: embed the descriptions, store them
+eval/eval_suite.py   the 12 question evaluation harness
+sql/reference_queries.sql       hand verified SQL for the eval
+docs/                the PRD, eval spec, lifecycle diagram, schema, wireframe
+```
 
 [CLAUDE.md](CLAUDE.md) has the full design notes, the data quirks, and the decisions, in more detail than this README.
